@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-// const Joi = require("joi");
+const Joi = require("joi");
 
 // {
 //   id: 6,
@@ -18,73 +18,125 @@ const { Schema, model } = require("mongoose");
 
 const carSchema = new Schema(
   {
-    id: {
-      type: Schema.Types.ObjectId,
-    },
     name: {
       type: String,
       required: [true, "Write name for your car"],
     },
     price: {
       type: Number,
-      required: [true, "Write price for your car"]
+      required: [true, "Write price for your car"],
     },
     location: {
       type: String,
-      required: [true, "Write location of your car"]
+      required: [true, "Write location of your car"],
     },
     year: {
-      type: Number, 
-      required: [true, "Write production year of your car"]
+      type: Number,
+      required: [true, "Write production year of your car"],
     },
     drive: {
       type: String,
-      required: [true, "Write drive type of yuor car"]
+      required: [true, "Write drive type of your car"],
     },
     fuel: {
       type: String,
-      required: [true, "Write fuel type of your car"]
+      required: [true, "Write fuel type of your car"],
     },
     transmission: {
       type: String,
-      required: [true, "Write your transmission type"]
+      required: [true, "Write transmission type of your car"],
     },
     mileage: {
       type: Number,
-      required: [true, "Write your mile range"]
+      required: [true, "Write mileage of your car"],
     },
     reviews: {
       type: Number,
-      required: [true, "Write your mile range"]
+      required: [true, "Write review count of your car"],
     },
-    img: {
-        type: String,
-        required: [true, "Write img link for your car"]
-    }
+    description: {
+      type: String,
+      required: [true, "Write a description for your car"],
+    },
+    image: {
+      type: String,
+      required: [true, "Provide an image URL for your car"],
+    },
+    quantity: {
+      type: Number,
+      required: [true, "Specify the quantity available"],
+    },
+    colors: {
+      type: [String],
+      required: [true, "Provide available colors for your car"],
+    },
   },
   { versionKey: false, timestamps: true }
 );
 
+
 carSchema.post("save", Error);
 
-// const addSchema = Joi.object({
-//     name: Joi.string().required().messages({
-//         "string.empty": `Car name cannot be empty`,
-//         "any.required": `Car name is required`,
-//     }),
-//     price: Joi.number().required().messages({
-//         "string.empty": `Car price cannot be empty`,
-//         "any.required": `Car price is required`,
-//     }),
-//     img: Joi.string().required().messages({
-//         "string.empty": `Car img cannot be empty`,
-//         "any.required": `Car img is required`,
-//     }),
-// });
+const addSchema = Joi.object({
+  name: Joi.string().required().messages({
+    "string.empty": "Car name cannot be empty",
+    "any.required": "Car name is required",
+  }),
+  price: Joi.number().required().messages({
+    "number.base": "Car price must be a number",
+    "any.required": "Car price is required",
+  }),
+  location: Joi.string().required().messages({
+    "string.empty": "Car location cannot be empty",
+    "any.required": "Car location is required",
+  }),
+  year: Joi.number().integer().required().messages({
+    "number.base": "Car year must be a number",
+    "any.required": "Car year is required",
+  }),
+  drive: Joi.string().required().messages({
+    "string.empty": "Car drive type cannot be empty",
+    "any.required": "Car drive type is required",
+  }),
+  fuel: Joi.string().required().messages({
+    "string.empty": "Car fuel type cannot be empty",
+    "any.required": "Car fuel type is required",
+  }),
+  transmission: Joi.string().required().messages({
+    "string.empty": "Car transmission type cannot be empty",
+    "any.required": "Car transmission type is required",
+  }),
+  mileage: Joi.number().required().messages({
+    "number.base": "Car mileage must be a number",
+    "any.required": "Car mileage is required",
+  }),
+  reviews: Joi.number().integer().required().messages({
+    "number.base": "Car review count must be a number",
+    "any.required": "Car review count is required",
+  }),
+  description: Joi.string().required().messages({
+    "string.empty": "Car description cannot be empty",
+    "any.required": "Car description is required",
+  }),
+  image: Joi.string().uri().required().messages({
+    "string.empty": "Car image cannot be empty",
+    "any.required": "Car image is required",
+    "string.uri": "Car image must be a valid URL",
+  }),
+  quantity: Joi.number().integer().required().messages({
+    "number.base": "Quantity must be a number",
+    "any.required": "Quantity is required",
+  }),
+  colors: Joi.array().items(Joi.string()).required().messages({
+    "array.base": "Colors must be an array of strings",
+    "any.required": "Car colors are required",
+  }),
+});
+
 
 const CarItem = model("cars", carSchema);
 
 module.exports = {
-  // addSchema,
+  addSchema,
   CarItem
 };
